@@ -60,7 +60,7 @@ class HidDeviceManager {
 
   /**
    * The device enumeration thread
-   * <p>
+   * <br>
    * We use a Thread instead of Executor since it may be stopped/paused/restarted frequently
    * and executors are more heavyweight in this regard
    */
@@ -91,9 +91,9 @@ class HidDeviceManager {
 
   /**
    * Starts the manager
-   * <p>
+   * <br>
    * If already started (scanning) it will immediately return without doing anything
-   * <p>
+   * <br>
    * Otherwise, this will perform a one-off scan of all devices then if the scan interval
    * is zero will stop there or will start the scanning daemon thread at the required interval.
    *
@@ -116,7 +116,7 @@ class HidDeviceManager {
 
   /**
    * Stop the scan thread and close all attached devices
-   * <p>
+   * <br>
    * This is normally part of a general application shutdown
    */
   public synchronized void stop() {
@@ -133,7 +133,7 @@ class HidDeviceManager {
   /**
    * Updates the device list by adding newly connected devices to it and by
    * removing no longer connected devices.
-   * <p>
+   * <br>
    * Will fire attach/detach events as appropriate.
    */
   public synchronized void scan() {

@@ -9,10 +9,10 @@ public interface DarwinHidApiLibrary extends HidrawHidApiLibrary {
 
   /**
    * Changes the behavior of all further calls to {@link #hid_open(short, short, WString)} or {@link #hid_open_path(String)}.
-   * <p>
+   * <br>
    * All devices opened by HIDAPI with {@link #hid_open(short, short, WString)} or {@link #hid_open_path(String)}
    * are opened in exclusive mode per default.
-   * <p>
+   * <br>
    * Calling this function before {@link #hid_init()} or after {@link #hid_exit()} has no effect.
    *
    * @since hidapi 0.12.0

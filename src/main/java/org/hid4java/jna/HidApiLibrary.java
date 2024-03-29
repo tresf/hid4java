@@ -48,7 +48,7 @@ public interface HidApiLibrary extends Library {
 
   /**
    * Finalize the HIDAPI library.
-   * <p>
+   * <br>
    * This function frees all the static data associated with HIDAPI. It should be called
    * at the end of execution to avoid memory leaks.
    */
@@ -56,7 +56,7 @@ public interface HidApiLibrary extends Library {
 
   /**
    * Open a HID device using a Vendor ID (VID), Product ID (PID) and optionally a serial number.
-   * <p>
+   * <br>
    * If serial_number is NULL, the first device with the specified VID and PID is opened.
    *
    * @param vendor_id     The vendor ID
@@ -83,7 +83,7 @@ public interface HidApiLibrary extends Library {
 
   /**
    * Read an Input report from a HID device.
-   * <p>
+   * <br>
    * Input reports are returned to the host through the INTERRUPT IN endpoint. The first byte will contain the Report number
    * if the device uses numbered reports.
    *
@@ -97,7 +97,7 @@ public interface HidApiLibrary extends Library {
 
   /**
    * Read an Input report from a HID device with timeout.
-   * <p>
+   * <br>
    * Input reports are returned to the host through the INTERRUPT IN endpoint. The first byte will contain the Report number
    * if the device uses numbered reports.
    *
@@ -112,15 +112,15 @@ public interface HidApiLibrary extends Library {
 
   /**
    * Write an Output report to a HID device.
-   * <p>
+   * <br>
    * The first byte of data[] must contain the Report ID. For devices which only support a single report, this must be set to 0x0.
    * The remaining bytes contain the report data.
-   * <p>
+   * <br>
    * Since the Report ID is mandatory, calls to hid_write() will always contain one more byte than the report contains.
-   * <p>
+   * <br>
    * For example, if a hid report is 16 bytes long, 17 bytes must be passed to hid_write(), the Report ID (or 0x0, for devices with
    * a single report), followed by the report data (16 bytes). In this example, the length passed in would be 17.
-   * <p>
+   * <br>
    * hid_write() will send the data on the first OUT endpoint, if one exists. If it does not, it will send the data through the
    * Control Endpoint (Endpoint 0).
    *
@@ -133,7 +133,7 @@ public interface HidApiLibrary extends Library {
 
   /**
    * Get a feature report from a HID device.
-   * <p>
+   * <br>
    * Set the first byte of data[] to the Report ID of the report to be read. Make sure to allow space for this extra byte in data[].
    * Upon return, the first byte will still contain the Report ID, and the report data will start in data[1].
    *
@@ -146,15 +146,15 @@ public interface HidApiLibrary extends Library {
 
   /**
    * Send a Feature report to the device.
-   * <p>
+   * <br>
    * Feature reports are sent over the Control endpoint as a Set_Report transfer.
-   * <p>
+   * <br>
    * The first byte of data[] must contain the Report ID. For devices which only support a single report, this must be set to 0x0.
-   * <p>
+   * <br>
    * The remaining bytes contain the report data.
-   * <p>
+   * <br>
    * Since the Report ID is mandatory, calls to hid_send_feature_report() will always contain one more byte than the report contains.
-   * <p>
+   * <br>
    * For example, if a hid report is 16 bytes long, 17 bytes must be passed to hid_send_feature_report():
    * the Report ID (or 0x0, for devices which do not use numbered reports), followed by the report data (16 bytes).
    * In this example, the length passed in would be 17.
@@ -223,11 +223,11 @@ public interface HidApiLibrary extends Library {
 
   /**
    * Set the device handle to be non-blocking.
-   * <p>
+   * <br>
    * In non-blocking mode calls to hid_read() will return immediately with a value of 0 if there is no data to be read.
-   * <p>
+   * <br>
    * In blocking mode, hid_read() will wait (block) until there is data to read before returning.
-   * <p>
+   * <br>
    * Nonblocking can be turned on and off at any time.
    *
    * @param device   The device handle
@@ -238,11 +238,11 @@ public interface HidApiLibrary extends Library {
 
   /**
    * Enumerate the HID Devices.
-   * <p>
+   * <br>
    * This function returns a linked list of all the HID devices attached to the system which match vendor_id and product_id.
-   * <p>
+   * <br>
    * If vendor_id is set to 0 then any vendor matches. If product_id is set to 0 then any product matches.
-   * <p>
+   * <br>
    * If vendor_id and product_id are both set to 0, then all HID devices will be returned.
    *
    * @param vendor_id  The vendor ID
@@ -260,7 +260,7 @@ public interface HidApiLibrary extends Library {
 
   /**
    * Open a HID device by its path name.
-   * <p>
+   * <br>
    * The path name be determined by calling hid_enumerate(), or a platform-specific path name can be used (eg: "/dev/hidraw0" on Linux).
    *
    * @param path The path name

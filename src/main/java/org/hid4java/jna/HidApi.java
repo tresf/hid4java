@@ -56,7 +56,7 @@ public class HidApi {
 
   /**
    * Enables use of the libusb variant of the hidapi native library when running on a Linux platform.
-   * <p>
+   * <br>
    * The default is hidraw which enables Bluetooth devices but requires udev rules.
    */
   public static boolean useLibUsbVariant = false;
@@ -64,7 +64,7 @@ public class HidApi {
   /**
    * When false - all devices will be opened in exclusive mode. (Default)
    * When true - all devices will be opened in non-exclusive mode.
-   * <p>
+   * <br>
    * See {@link DarwinHidApiLibrary#hid_darwin_set_open_exclusive(int)} for more information.
    */
   public static boolean darwinOpenDevicesNonExclusive = false;
@@ -72,9 +72,9 @@ public class HidApi {
   /**
    * Enables HID traffic logging to stdout to assist debugging. This will show all bytes (including the extra report ID)
    * that were sent or received via HIDAPI buffers. It does not log direct string calls (e.g. getEnumeratedString()).
-   * <p>
+   * <br>
    * Format is '&gt;' for host to device then '[count]' then hex bytes.
-   * <p>
+   * <br>
    * This may present a security issue if left enabled in production, although a packet sniffer would see the same data.
    */
   public static boolean logTraffic = false;
@@ -251,10 +251,10 @@ public class HidApi {
 
   /**
    * Set the device handle to be non-blocking
-   * <p>
+   * <br>
    * In non-blocking mode calls to hid_read() will return immediately with a value of 0 if there is no data to be read.
    * In blocking mode, hid_read() will wait (block) until there is data to read before returning
-   * <p>
+   * <br>
    * Non-blocking can be turned on and off at any time
    *
    * @param device      The HID device
@@ -325,7 +325,7 @@ public class HidApi {
   /**
    * Get a feature report from a HID device
    * <b>HID API notes</b>
-   * <p>
+   * <br>
    * Under the covers the HID library will set the first byte of data[] to the Report ID of the report to be read.
    * Upon return, the first byte will still contain the Report ID, and the report data will start in data[1]
    * This method handles all the wide string and array manipulation for you
@@ -362,17 +362,17 @@ public class HidApi {
   /**
    * Send a Feature report to the device using a simplified interface
    * <b>HID API notes</b>
-   * <p>
+   * <br>
    * Under the covers, feature reports are sent over the Control endpoint as a Set_Report transfer.
    * The first byte of data[] must contain the Report ID. For devices which only support a single report,
    * this must be set to 0x0. The remaining bytes contain the report data
    * Since the Report ID is mandatory, calls to hid_send_feature_report() will always contain one more byte than
    * the report contains.
-   * <p>
+   * <br>
    * For example, if a hid report is 16 bytes long, 17 bytes must be passed to
    * hid_send_feature_report(): the Report ID (or 0x00, for devices which do not use numbered reports), followed by
    * the report data (16 bytes). In this example, the bytes written would be 17.
-   * <p>
+   * <br>
    * This method handles all the array manipulation for you
    *
    * @param device   The HID device
@@ -400,13 +400,13 @@ public class HidApi {
   /**
    * Write an Output report to a HID device using a simplified interface
    * <b>HID API notes</b>
-   * <p>
+   * <br>
    * In USB HID the first byte of the data packet must contain the Report ID.
    * For devices which only support a single report, this must be set to 0x00.
    * The remaining bytes contain the report data. Since the Report ID is mandatory,
    * calls to <code>hid_write()</code> will always contain one more byte than the report
    * contains.
-   * <p>
+   * <br>
    * For example, if a HID report is 16 bytes long, 17 bytes must be passed to <code>hid_write()</code>,
    * the Report ID (or 0x00, for devices with a single report), followed by the report data (16 bytes).
    * In this example, the length passed in would be 17.
@@ -466,9 +466,9 @@ public class HidApi {
 
   /**
    * Get a report descriptor from a HID device
-   * <p>
+   * <br>
    * User has to provide a preallocated buffer (4096 bytes recommended) where descriptor will be copied to
-   * <p>
+   * <br>
    * @param device The HID device
    * @param buffer The buffer to copy descriptor into.
    * @param size   The size of the buffer in bytes.
