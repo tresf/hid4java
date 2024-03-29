@@ -60,8 +60,10 @@ plain="\033[0m"
 # @Tresf: Function to do "make clean" without incurring issues during build
 function git-clean {
   echo -e "${yellow}Cleaning hidapi${plain}"
-  git clean -fd > /dev/null 2>&1 || exit     # remove all untracked files
-  git reset --hard > /dev/null 2>&1 || exit  # reset all tracked files
+  # Remove all untracked files (including project files)
+  git clean -fdx > /dev/null 2>&1 || exit
+  # Reset all tracked files
+  git reset --hard > /dev/null 2>&1 || exit
 }
 
 # Function to provide library file details
