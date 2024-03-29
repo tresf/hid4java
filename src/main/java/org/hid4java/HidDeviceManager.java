@@ -117,7 +117,8 @@ class HidDeviceManager {
   /**
    * Stop the scan thread and close all attached devices
    * <br>
-   * This is normally part of a general application shutdown
+   * This is normally part of a general application shutdown and will
+   * also clear the attached devices map
    */
   public synchronized void stop() {
 
@@ -127,6 +128,9 @@ class HidDeviceManager {
     for (HidDevice hidDevice: attachedDevices.values()) {
         hidDevice.close();
     }
+
+    // Remove all entries from the attached devices
+    attachedDevices.clear();
 
   }
 
@@ -261,6 +265,14 @@ class HidDeviceManager {
 
     if (isScanning()) {
       scanThread.interrupt();
+      // Wait up to 50ms for scanThread to terminate to avoid
+      // spurious return values from isScanning()
+      // See hid4java issue #125
+      try {
+        scanThread.join(50);
+      } catch (InterruptedException e) {
+        // Ignore and continue
+      }
     }
 
   }
