@@ -171,6 +171,7 @@ if [[ "$1" == "all" ]] || [[ "$1" == "windows" ]] || [[ "$1" == "win32-x86-64" ]
         exit
       else
         echo -e "${green}OK${plain}"
+        mkdir -p ${hid4javaDir}/src/main/resources/win32-x86-64
         cp windows/.libs/libhidapi-0.dll ${hid4javaDir}/src/main/resources/win32-x86-64/hidapi.dll
     fi
   else
@@ -189,6 +190,7 @@ if [[ "$1" == "all" ]] || [[ "$1" == "windows" ]] || [[ "$1" == "win32-aarch64" 
         exit
       else
         echo -e "${green}OK${plain}"
+        mkdir -p ${hid4javaDir}/src/main/resources/win32-aarch64
         cp windows/.libs/libhidapi-0.dll ${hid4javaDir}/src/main/resources/win32-aarch64/hidapi.dll
     fi
   else
@@ -206,6 +208,7 @@ if [[ "$1" == "all" ]] || [[ "$1" == "windows" ]] || [[ "$1" == "win32-x86" ]]
         rm ${hid4javaDir}/src/main/resources/win32-x86/hidapi.dll
       else
         echo -e "${green}OK${plain}"
+        mkdir -p ${hid4javaDir}/src/main/resources/win32-x86
         cp windows/.libs/libhidapi-0.dll ${hid4javaDir}/src/main/resources/win32-x86/hidapi.dll
     fi
   else
@@ -229,6 +232,7 @@ if [[ "$1" == "all" ]] || [[ "$1" == "linux" ]] || [[ "$1" == "linux-x86-64" ]]
         rm ${hid4javaDir}/src/main/resources/linux-amd64/libhidapi-libusb.so
       else
         echo -e "${green}OK${plain}"
+        mkdir -p ${hid4javaDir}/src/main/resources/linux-x86-64
         cp linux/.libs/libhidapi-hidraw.so ${hid4javaDir}/src/main/resources/linux-x86-64/libhidapi.so
         cp linux/.libs/libhidapi-hidraw.so ${hid4javaDir}/src/main/resources/linux-amd64/libhidapi.so
         cp libusb/.libs/libhidapi-libusb.so ${hid4javaDir}/src/main/resources/linux-x86-64/libhidapi-libusb.so
@@ -243,7 +247,6 @@ echo -e "${green}---------------------------------------------------------------
 if [[ "$1" == "all" ]] || [[ "$1" == "linux" ]] || [[ "$1" == "linux-x86" ]]
   then
     echo -e "${green}Building Linux 32-bit${plain}" && git-clean
-    # TODO Incorrect argument, i686 version fails with no libudev
     if ! dockcross-linux-x86 bash -c 'sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get --yes install libudev-dev libusb-1.0-0-dev libudev-dev:i386 libusb-1.0-0-dev:i386 && sudo ./bootstrap && sudo ./configure && sudo make';
       then
         echo -e "${red}Failed${plain} - Removing damaged targets"
@@ -251,6 +254,7 @@ if [[ "$1" == "all" ]] || [[ "$1" == "linux" ]] || [[ "$1" == "linux-x86" ]]
         rm ${hid4javaDir}/src/main/resources/linux-x86/libhidapi-libusb.so
       else
         echo -e "${green}OK${plain}"
+        mkdir -p ${hid4javaDir}/src/main/resources/linux-x86
         cp linux/.libs/libhidapi-hidraw.so ${hid4javaDir}/src/main/resources/linux-x86/libhidapi.so
         cp libusb/.libs/libhidapi-libusb.so ${hid4javaDir}/src/main/resources/linux-x86/libhidapi-libusb.so
     fi
@@ -265,7 +269,6 @@ echo -e "${green}---------------------------------------------------------------
 if [[ "$1" == "all" ]] || [[ "$1" == "linux" ]] || [[ "$1" == "linux-aarch64" ]]
   then
     echo -e "${green}Building ARM64/aarch64 ARMv8${plain}" && git-clean
-    # TODO Package error during "apt" phase
     if ! dockcross-linux-arm64 bash -c 'sudo dpkg --add-architecture arm64 && sudo apt-get update && sudo apt-get --yes install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libudev-dev:arm64 libusb-1.0-0-dev:arm64 && sudo ./bootstrap && sudo ./configure --host=aarch64-linux-gnu CC=aarch64-linux-gnu-gcc && sudo make';
       then
         echo -e "${red}Failed${plain} - Removing damaged targets"
@@ -273,6 +276,7 @@ if [[ "$1" == "all" ]] || [[ "$1" == "linux" ]] || [[ "$1" == "linux-aarch64" ]]
         rm ${hid4javaDir}/src/main/resources/linux-aarch64/libhidapi-libusb.so
       else
         echo -e "${green}OK${plain}"
+        mkdir -p ${hid4javaDir}/src/main/resources/linux-aarch64
         cp linux/.libs/libhidapi-hidraw.so ${hid4javaDir}/src/main/resources/linux-aarch64/libhidapi.so
         cp libusb/.libs/libhidapi-libusb.so ${hid4javaDir}/src/main/resources/linux-aarch64/libhidapi-libusb.so
     fi
@@ -285,16 +289,7 @@ echo -e "${green}---------------------------------------------------------------
 if [[ "$1" == "all" ]] || [[ "$1" == "linux" ]] || [[ "$1" == "linux-arm" ]]
   then
     echo -e "${yellow}Skipping linux-arm (use RPi direct instead)${plain}"
-#    echo -e "${green}Building ARMv7 hard float  (RPi)${plain}" && git-clean
-#    if ! dockcross-linux-armv7 bash -c 'sudo dpkg --add-architecture armhf && sudo rm -Rf /var/lib/apt/lists && sudo apt-get update && sudo apt-get --yes install libudev-dev:armhf libusb-1.0-0-dev:armhf gcc-arm-linux-gnueabihf && sudo ./bootstrap && sudo ./configure --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc && sudo make';
-#      then
-#        echo -e "${red}Failed${plain} - Removing damaged targets"
-#        rm ${hid4javaDir}/src/main/resources/linux-arm/libhidapi.so
-#      else
-#        echo -e "${green}OK${plain}"
-#        cp linux/.libs/libhidapi-hidraw.so ${hid4javaDir}/src/main/resources/linux-arm/libhidapi.so
-#        cp libusb/.libs/libhidapi-libusb.so ${hid4javaDir}/src/main/resources/linux-arm/libhidapi-libusb.so
-#    fi
+    # It's much easier to just use the original hardware
   else
     echo -e "${yellow}Skipping linux-arm${plain}"
 fi
@@ -316,6 +311,7 @@ if [[ "${hardwareName}" == "arm64" ]]
             rm ${hid4javaDir}/src/main/resources/darwin-aarch64/libhidapi.dylib
           else
             echo -e "${green}OK${plain}"
+            mkdir -p ${hid4javaDir}/src/main/resources/darwin-aarch64
             cp mac/.libs/libhidapi.0.dylib ${hid4javaDir}/src/main/resources/darwin-aarch64/libhidapi.dylib
         fi
       else
@@ -335,6 +331,7 @@ if [[ "${hardwareName}" == "arm64" ]]
             rm ${hid4javaDir}/src/main/resources/darwin-x86-64/libhidapi.dylib
           else
             echo -e "${green}OK${plain}"
+            mkdir -p ${hid4javaDir}/src/main/resources/darwin-x86-64
             cp mac/.libs/libhidapi.0.dylib ${hid4javaDir}/src/main/resources/darwin-x86-64/libhidapi.dylib
         fi
       else
