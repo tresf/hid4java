@@ -31,6 +31,7 @@
 # linux-aarch64 - Linux ARMv8 64-bit
 # linux-amd64 - Linux AMD 64-bit
 # linux-arm - Linux ARMv6 hard float 32-bit (RPi)
+# linux-armel - Linux ARMv5 soft float 32-bit
 # linux-x86-64 - Linux x86 64-bit (same as AMD64)
 # linux-x86 - Linux x86 32-bit
 # win32-x86 - Windows 32-bit
@@ -128,6 +129,13 @@ if [[ "$1" == "update" ]]
     mv ./dockcross-linux-x86 /usr/local/bin
 
     # ARM cross compilers
+
+    # @Tresf
+    # 32-bit ARMv5TE EABI "armel"
+    echo -e "${green}Configuring ARMv5TE EABI 32-bit${plain}"
+    docker run ${platform} --rm dockcross/linux-armv5 > ./dockcross-linux-armv5
+    chmod +x ./dockcross-linux-armv5
+    mv ./dockcross-linux-armv5 /usr/local/bin
 
     # 32-bit ARMv6 EABI
     echo -e "${green}Configuring ARMv6 EABI 32-bit${plain}"
@@ -297,6 +305,40 @@ if [[ "$1" == "all" ]] || [[ "$1" == "linux" ]] || [[ "$1" == "linux-arm" ]]
 fi
 echo -e "${green}------------------------------------------------------------------------${plain}"
 
+# @Tresf
+# 32-bit ARM soft float (linux-armel)
+if [[ "$1" == "all" ]] || [[ "$1" == "linux" ]] || [[ "$1" == "linux-armel" ]]
+  then
+    echo -e "${green}Building ARM soft float${plain}"  && git-clean
+    make clean &> /dev/null
+
+    # Disabling building hidtest
+    sed -i'' -e 's/SUBDIRS \+= hidtest//g' Makefile.am
+
+    arch="armel"
+    deps="echo \"Obtaining $arch dependencies...\""
+    deps="$deps && sudo dpkg --add-architecture $arch"
+    deps="$deps && sudo apt-get update"
+    deps="$deps && sudo apt-get --yes install libudev-dev:$arch libusb-1.0-0-dev:$arch"
+    deps="$deps ;  echo 'WARNING: Ignoring any errors from previous command'"
+    deps="$deps && cp /usr/include/libudev.h ./libudev.h"
+    deps="$deps && export PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabi/pkgconfig/"
+    if ! dockcross-linux-armv5 bash -c "$deps && sudo ./bootstrap && sudo ./configure --host=aarch64-unknown-linux-gnueabi && sudo make";
+      then
+        echo -e "${red}Failed${plain} - Removing damaged targets"
+        rm ${hid4javaDir}/src/main/resources/linux-armel/libhidapi.so
+        rm ${hid4javaDir}/src/main/resources/linux-armel/libhidapi-libusb.so
+      else
+        echo -e "${green}OK${plain}"
+        mkdir -p ${hid4javaDir}/src/main/resources/linux-armel
+        cp linux/.libs/libhidapi-hidraw.so ${hid4javaDir}/src/main/resources/linux-armel/libhidapi.so
+        cp libusb/.libs/libhidapi-libusb.so ${hid4javaDir}/src/main/resources/linux-armel/libhidapi-libusb.so
+    fi
+  else
+    echo -e "${yellow}Skipping linux-armel${plain}"
+fi
+echo -e "${green}------------------------------------------------------------------------${plain}"
+
 # macOS environments (require local build)
 
 if [[ "${hardwareName}" == "arm64" ]]
@@ -390,6 +432,10 @@ if [[ "$1" == "update" ]]
     echo -e "${green}linux-arm${plain}"
     report "src/main/resources/linux-arm/libhidapi.so"
     report "src/main/resources/linux-arm/libhidapi-libusb.so"
+
+    echo -e "${green}linux-armel${plain}"
+    report "src/main/resources/linux-armel/libhidapi.so"
+    report "src/main/resources/linux-armel/libhidapi-libusb.so"
 
     echo -e "${green}linux-aarch64${plain}"
     report "src/main/resources/linux-aarch64/libhidapi.so"
