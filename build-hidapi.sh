@@ -64,6 +64,19 @@ function git-clean {
   git reset --hard > /dev/null 2>&1 || exit  # reset all tracked files
 }
 
+# Function to provide library file details
+function report {
+
+if [[ ! -f $1 ]]
+  then
+    echo -e "${red}File '$1' was not found.${plain}"
+  else
+    ls -la $1
+    file -b $1
+    echo -e "${green}---${plain}"
+fi
+}
+
 echo -e "${green}------------------------------------------------------------------------${plain}"
 echo -e "${yellow}Using '$1' to perform build${plain}"
 
@@ -82,19 +95,19 @@ if [[ "$1" == "update" ]]
     echo -e "${green}Configuring Windows 64-bit${plain}"
     docker run ${platform} --rm dockcross/windows-shared-x64 > ./dockcross-windows-shared-x64
     chmod +x ./dockcross-windows-shared-x64
-    mv ./dockcross-windows-shared-x64 ~/bin
+    mv ./dockcross-windows-shared-x64 /usr/local/bin
 
     # 32-bit (Intel)
     echo -e "${green}Configuring Windows 32-bit${plain}"
     docker run ${platform} --rm dockcross/windows-shared-x86 > ./dockcross-windows-shared-x86
     chmod +x ./dockcross-windows-shared-x86
-    mv ./dockcross-windows-shared-x86 ~/bin
+    mv ./dockcross-windows-shared-x86 /usr/local/bin
 
     # 64-bit (ARM64)
     echo -e "${green}Configuring Windows 64-bit ARM64 (aarch64)${plain}"
     docker run ${platform} --rm dockcross/windows-arm64 > ./dockcross-windows-arm64
     chmod +x ./dockcross-windows-arm64
-    mv ./dockcross-windows-arm64 ~/bin
+    mv ./dockcross-windows-arm64 /usr/local/bin
 
     echo -e "${green}Configuring Linux environments${plain}"
 
@@ -104,13 +117,13 @@ if [[ "$1" == "update" ]]
     echo -e "${green}Configuring Linux 64-bit${plain}"
     docker run ${platform} --rm dockcross/linux-x64 > ./dockcross-linux-x64
     chmod +x ./dockcross-linux-x64
-    mv ./dockcross-linux-x64 ~/bin
+    mv ./dockcross-linux-x64 /usr/local/bin
 
     # 32 bit (Intel)
     echo -e "${green}Configuring Linux 32-bit${plain}"
     docker run ${platform} --rm dockcross/linux-x86 > ./dockcross-linux-x86
     chmod +x ./dockcross-linux-x86
-    mv ./dockcross-linux-x86 ~/bin
+    mv ./dockcross-linux-x86 /usr/local/bin
 
     # ARM cross compilers
 
@@ -118,19 +131,19 @@ if [[ "$1" == "update" ]]
     echo -e "${green}Configuring ARMv6 EABI 32-bit${plain}"
     docker run ${platform} --rm dockcross/linux-armv6 > ./dockcross-linux-armv6
     chmod +x ./dockcross-linux-armv6
-    mv ./dockcross-linux-armv6 ~/bin
+    mv ./dockcross-linux-armv6 /usr/local/bin
 
     # 32-bit ARMv7 hard float
     echo -e "${green}Configuring ARMv7 32-bit${plain}"
     docker run ${platform} --rm dockcross/linux-armv7 > ./dockcross-linux-armv7
     chmod +x ./dockcross-linux-armv7
-    mv ./dockcross-linux-armv7 ~/bin
+    mv ./dockcross-linux-armv7 /usr/local/bin
 
     # 64-bit (arm64, aarch64)
     echo -e "${green}Configuring ARM 64-bit${plain}"
     docker run ${platform} --rm dockcross/linux-arm64 > ./dockcross-linux-arm64
     chmod +x ./dockcross-linux-arm64
-    mv ./dockcross-linux-arm64 ~/bin
+    mv ./dockcross-linux-arm64 /usr/local/bin
 
     # HIDAPI latest release
     echo -e "${green}Updating HIDAPI${plain}"
@@ -271,8 +284,8 @@ echo -e "${green}---------------------------------------------------------------
 # 32-bit ARMv6 hard float (linux-arm)
 if [[ "$1" == "all" ]] || [[ "$1" == "linux" ]] || [[ "$1" == "linux-arm" ]]
   then
-    echo -e "${yellow}Skipping linux-arm (use RPi direct instead)${plain}" && git-clean
-#    echo -e "${green}Building ARMv7 hard float  (RPi)${plain}"
+    echo -e "${yellow}Skipping linux-arm (use RPi direct instead)${plain}"
+#    echo -e "${green}Building ARMv7 hard float  (RPi)${plain}" && git-clean
 #    if ! dockcross-linux-armv7 bash -c 'sudo dpkg --add-architecture armhf && sudo rm -Rf /var/lib/apt/lists && sudo apt-get update && sudo apt-get --yes install libudev-dev:armhf libusb-1.0-0-dev:armhf gcc-arm-linux-gnueabihf && sudo ./bootstrap && sudo ./configure --host=arm-linux-gnueabihf CC=arm-linux-gnueabihf-gcc && sudo make';
 #      then
 #        echo -e "${red}Failed${plain} - Removing damaged targets"
@@ -345,13 +358,13 @@ if [[ "$1" == "update" ]]
     echo -e "${green}Windows${plain}"
 
     echo -e "${green}win32-x86-64${plain}"
-    file -b src/main/resources/win32-x86-64/hidapi.dll
+    report "src/main/resources/win32-x86-64/hidapi.dll"
 
     echo -e "${green}win32-x86${plain}"
-    file -b src/main/resources/win32-x86/hidapi.dll
+    report "src/main/resources/win32-x86/hidapi.dll"
 
     echo -e "${green}win32-aarch64${plain}"
-    file -b src/main/resources/win32-aarch64/hidapi.dll
+    report "src/main/resources/win32-aarch64/hidapi.dll"
 
     echo -e "${green}------------------------------------------------------------------------${plain}"
 
@@ -359,16 +372,16 @@ if [[ "$1" == "update" ]]
     echo -e "${green}Linux${plain}"
 
     echo -e "${green}linux-x86-64${plain}"
-    file -b src/main/resources/linux-x86-64/libhidapi.so
-    file -b src/main/resources/linux-x86-64/libhidapi-libusb.so
+    report "src/main/resources/linux-x86-64/libhidapi.so"
+    report "src/main/resources/linux-x86-64/libhidapi-libusb.so"
 
     echo -e "${green}linux-amd64${plain}"
-    file -b src/main/resources/linux-amd64/libhidapi.so
-    file -b src/main/resources/linux-amd64/libhidapi-libusb.so
+    report "src/main/resources/linux-amd64/libhidapi.so"
+    report "src/main/resources/linux-amd64/libhidapi-libusb.so"
 
     echo -e "${green}linux-x86${plain}"
-    file -b src/main/resources/linux-x86/libhidapi.so
-    file -b src/main/resources/linux-x86/libhidapi-libusb.so
+    report "src/main/resources/linux-x86/libhidapi.so"
+    report "src/main/resources/linux-x86/libhidapi-libusb.so"
 
     echo -e "${green}------------------------------------------------------------------------${plain}"
 
@@ -376,12 +389,12 @@ if [[ "$1" == "update" ]]
     echo -e "${green}ARM${plain}"
 
     echo -e "${green}linux-arm${plain}"
-    file -b src/main/resources/linux-arm/libhidapi.so
-    file -b src/main/resources/linux-arm/libhidapi-libusb.so
+    report "src/main/resources/linux-arm/libhidapi.so"
+    report "src/main/resources/linux-arm/libhidapi-libusb.so"
 
     echo -e "${green}linux-aarch64${plain}"
-    file -b src/main/resources/linux-aarch64/libhidapi.so
-    file -b src/main/resources/linux-aarch64/libhidapi-libusb.so
+    report "src/main/resources/linux-aarch64/libhidapi.so"
+    report "src/main/resources/linux-aarch64/libhidapi-libusb.so"
 
     echo -e "${green}------------------------------------------------------------------------${plain}"
 
@@ -389,10 +402,10 @@ if [[ "$1" == "update" ]]
     echo -e "${green}OS X${plain}"
 
     echo -e "${green}darwin${plain}"
-    file -b src/main/resources/darwin-x86-64/libhidapi.dylib
+    report "src/main/resources/darwin-x86-64/libhidapi.dylib"
 
     echo -e "${green}darwin-aarch64${plain}"
-    file -b src/main/resources/darwin-aarch64/libhidapi.dylib
+    report "src/main/resources/darwin-aarch64/libhidapi.dylib"
 
     echo -e "${green}------------------------------------------------------------------------${plain}"
 
