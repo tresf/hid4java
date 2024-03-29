@@ -37,7 +37,9 @@ an instant response but I'm usually active on Telegram during office hours in th
 </dependencies>
 
 ```
-If you are developing and want the latest code, you'll need to reference artifacts deployed to the Maven Central snapshot repository which are updated more frequently as part of wider user acceptance testing, but they are not considered stable enough for production use. You will need to add the following reference to your `pom.xml` assuming you're using Maven for your build process.
+If you are developing and want the latest code, you'll need to reference release candidate artifacts deployed to the Maven Central snapshot repository. These are updated more frequently as part of wider user acceptance testing, but they are not considered stable enough for production use. 
+
+Add the following `repositories` section to your project's `pom.xml` if you're using Maven for your build process.
 
 ```xml
   <!-- Enable Maven Central snapshots repository -->
@@ -112,7 +114,8 @@ mvn clean install
 
 and you're good to go. 
 
-Maven will place the built JAR into the `target` directory. The Maven `install` process will also place a copies of the built artifacts into `~/.m2/repository/org/hid4java/hid4java/<version>/`.
+Maven will place the built JAR into the `target` directory. 
+The Maven `install` process will also place copies of the built JARs into `~/.m2/repository/org/hid4java/hid4java/<version>/` so that other local projects can find and share them. 
 
 # 🤔 More information
 
