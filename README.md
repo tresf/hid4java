@@ -11,14 +11,15 @@ The `hid4java` project supports USB HID devices through a common API which is pr
 If you want to discuss `hid4java` in general please use [the Telegram chat](https://t.me/joinchat/CtU4ZBltWCAFBAjwM5KLLw). I can't guarantee
 an instant response but I'm usually active on Telegram during office hours in the GMT timezone.
 
-Remember to [check the Wiki first](https://github.com/gary-rowe/hid4java/wiki/Home) before asking questions to avoid causing frustration!
+👀 Remember to [check the Wiki first](https://github.com/gary-rowe/hid4java/wiki/Home) before asking questions to avoid causing frustration!
 
 ## Technologies
 
 * [hidapi](https://github.com/libusb/hidapi) - Native USB HID library for multiple platforms
-* [JNA](https://github.com/twall/jna) - to remove the need for Java Native Interface (JNI) and greatly simplify the project
+* [JNA](https://github.com/twall/jna) - Removes the need for Java Native Interface (JNI) and greatly simplify the project
 * [dockcross](https://github.com/dockcross/dockcross) - Cross-compilation environments for multiple platforms to create hidapi libraries
-* Java 7+ - to remove dependencies on JVMs that have reached end of life
+* [Maven](https://maven.apache.org/) - Build environment for Java projects if you need to customise the library
+* Java 8+ - to remove dependencies on JVMs that have reached end of life
 
 ## Maven dependency
 
@@ -35,6 +36,23 @@ Remember to [check the Wiki first](https://github.com/gary-rowe/hid4java/wiki/Ho
 
 </dependencies>
 
+```
+If you are developing and want the latest code, you'll need to reference artifacts deployed to the Maven Central snapshot repository which are updated more frequently as part of wider user acceptance testing, but they are not considered stable enough for production use. You will need to add the following reference to your `pom.xml` assuming you're using Maven for your build process.
+
+```xml
+  <!-- Enable Maven Central snapshots repository -->
+<repositories>
+  <repository>
+    <id>oss.sonatype.org-snapshot</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+    <snapshots>
+      <enabled>true</enabled>
+    </snapshots>
+  </repository>
+</repositories>
 ```
 
 ## Gradle dependency
@@ -94,6 +112,8 @@ mvn clean install
 
 and you're good to go. 
 
+Maven will place the built JAR into the `target` directory. The Maven `install` process will also place a copies of the built artifacts into `~/.m2/repository/org/hid4java/hid4java/<version>/`.
+
 # 🤔 More information
 
 Much of the information previously in this README has been migrated to the [project Wiki](https://github.com/gary-rowe/hid4java/wiki/Home) as it was getting rather long. Here are some useful jumping off points that should help:
@@ -107,6 +127,6 @@ Much of the information previously in this README has been migrated to the [proj
 
 All trademarks and copyrights are acknowledged.
 
-Many thanks to `victorix` who provided the basis for this library. Please [see the inspiration on the mbed.org site](http://developer.mbed.org/cookbook/USBHID-bindings-).
+Many thanks to `victorix` who provided the basis for this library. Please [see the inspiration on the mbed site](https://os.mbed.com/cookbook/USBHID-bindings-).
 
 Thanks also go to everyone who has contributed their knowledge and advice during the creation and subsequent improvement of this library.
