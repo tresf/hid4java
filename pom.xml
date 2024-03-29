@@ -98,7 +98,7 @@
   <build>
     <plugins>
 
-      <!-- Filter out functional tests by Maven (an IDE will run all tests including functional) -->
+      <!-- Handle unit test execution -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -171,7 +171,10 @@
     <dependency>
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
-      <version>5.14.0</version>
+      <!-- 5.7.0 JNA supports darwin-aarch64 -->
+      <!-- 5.8.0 JNA supports linux-riscv64 -->
+      <!-- Latest version generally recommended -->
+      <version>[5.8.0,)</version>
     </dependency>
 
     <!-- JUnit -->
