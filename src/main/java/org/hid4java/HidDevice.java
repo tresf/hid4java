@@ -185,7 +185,7 @@ public class HidDevice {
   /**
    * Attempt to read all data from the device input buffer as part
    * of the automatic data read process
-   *
+   * <p>
    * Will fire attach/detach events as appropriate.
    */
   private synchronized void dataRead() {
@@ -200,8 +200,8 @@ public class HidDevice {
   /**
    * The "path" is well-supported across Windows, Mac and Linux so makes a
    * better choice for a unique ID
-   *
-   * See #8 for details
+   * <p>
+   * See hid4java issue #8 for details
    *
    * @return A unique device ID made up from vendor ID, product ID and serial number
    * @since 0.1.0
@@ -343,11 +343,11 @@ public class HidDevice {
 
   /**
    * Set the device handle to be non-blocking
-   *
+   * <p>
    * In non-blocking mode calls to hid_read() will return immediately with a
    * value of 0 if there is no data to be read. In blocking mode, hid_read()
    * will wait (block) until there is data to read before returning
-   *
+   * <p>
    * Non-blocking can be turned on and off at any time
    *
    * @param nonBlocking True if non-blocking mode is required
@@ -362,7 +362,7 @@ public class HidDevice {
 
   /**
    * Read an Input report from a HID device
-   *
+   * <p>
    * Input reports are returned to the host through the INTERRUPT IN endpoint.
    * The first byte will contain the Report number if the device uses numbered
    * reports
@@ -382,7 +382,7 @@ public class HidDevice {
 
   /**
    * Read an Input report from a HID device
-   *
+   * <p>
    * Input reports are returned to the host through the INTERRUPT IN endpoint.
    * The first byte will contain the Report number if the device uses numbered
    * reports
@@ -432,7 +432,7 @@ public class HidDevice {
 
   /**
    * Read an Input report (64 bytes) from a HID device with a 1000ms timeout.
-   *
+   * <p>
    * Input reports are returned to the host through the INTERRUPT IN endpoint.
    * The first byte will contain the Report number if the device uses numbered
    * reports.
@@ -501,11 +501,10 @@ public class HidDevice {
 
   /**
    * Get a feature report from a HID device
-   *
    * Under the covers the HID library will set the first byte of data[] to the
    * Report ID of the report to be read. Upon return, the first byte will
    * still contain the Report ID, and the report data will start in data[1]
-   *
+   * <p>
    * This method handles all the wide string and array manipulation for you
    *
    * @param data     The buffer to contain the report
@@ -523,19 +522,19 @@ public class HidDevice {
 
   /**
    * Send a Feature report to the device
-   *
+   * <p>
    * Under the covers, feature reports are sent over the Control endpoint as a
    * Set_Report transfer. The first byte of data[] must contain the Report ID.
    * For devices which only support a single report, this must be set to 0x0.
    * The remaining bytes contain the report data
-   *
+   * <p>
    * Since the Report ID is mandatory, calls to hid_send_feature_report() will
    * always contain one more byte than the report contains. For example, if a
    * hid report is 16 bytes long, 17 bytes must be passed to
    * hid_send_feature_report(): the Report ID (or 0x0, for devices which do
    * not use numbered reports), followed by the report data (16 bytes). In
    * this example, the length passed in would be 17
-   *
+   * <p>
    * This method handles all the array manipulation for you
    *
    * @param data     The feature report data (will be widened and have the report
@@ -567,8 +566,29 @@ public class HidDevice {
   }
 
   /**
-   * Write the message to the HID API without zero byte padding.
+   * Get a report descriptor from a HID device
+   * <p>
+   * A report descriptor provides significant detail on the characteristics of
+   * an attached device using a defined format.
+   * <p>
+   * You may find these supporting documents helpful:
+   * @link <a href="https://usb.org/document-library/hid-usage-tables-15">HID Usage Tables 1.5 (PDF)</a>
+   * @link <a href="https://www.usb.org/document-library/device-class-definition-hid-111">Device Class Definition HID 1.11 (PDF)</a>
    *
+   * @param buffer The buffer for descriptor (4096 bytes recommended).
+   * @return A non-negative number of bytes actually copied, or -1 on error.
+   * @since 0.14.0 hidapi
+   */
+  public int getReportDescriptor(byte[] buffer) {
+    if (isClosed()) {
+      throw new IllegalStateException("Device has not been opened");
+    }
+    return HidApi.getReportDescriptor(hidDeviceStructure, buffer, buffer.length);
+  }
+
+  /**
+   * Write the message to the HID API without zero byte padding.
+   * <p>
    * Note that the report ID will be prefixed to the HID packet as per HID rules.
    *
    * @param message      The message
@@ -586,7 +606,7 @@ public class HidDevice {
 
   /**
    * Write the message to the HID API with optional zero byte padding to packet length.
-   *
+   * <p>
    * Note that the report ID will be prefixed to the HID packet as per HID rules.
    *
    * @param message      The message

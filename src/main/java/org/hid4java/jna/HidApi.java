@@ -72,9 +72,9 @@ public class HidApi {
   /**
    * Enables HID traffic logging to stdout to assist debugging. This will show all bytes (including the extra report ID)
    * that were sent or received via HIDAPI buffers. It does not log direct string calls (e.g. getEnumeratedString()).
-   *
+   * <p>
    * Format is '&gt;' for host to device then '[count]' then hex bytes.
-   *
+   * <p>
    * This may present a security issue if left enabled in production, although a packet sniffer would see the same data.
    */
   public static boolean logTraffic = false;
@@ -90,7 +90,6 @@ public class HidApi {
    * @param vendor       The vendor ID
    * @param product      The product ID
    * @param serialNumber The serial number
-   *
    * @return The device or null if not found
    */
   public static HidDeviceStructure open(int vendor, int product, String serialNumber) {
@@ -142,7 +141,6 @@ public class HidApi {
    * Open a HID device by its path name
    *
    * @param path The device path (e.g. "0003:0002:00")
-   *
    * @return The device or null if not found
    */
   public static HidDeviceStructure open(String path) {
@@ -168,7 +166,6 @@ public class HidApi {
    *
    * @param vendor  The vendor ID
    * @param product The product ID
-   *
    * @return The device info of the matching device
    */
   public static HidDeviceInfoStructure enumerateDevices(int vendor, int product) {
@@ -190,7 +187,6 @@ public class HidApi {
 
   /**
    * @param device The HID device structure
-   *
    * @return A string describing the last error which occurred
    */
   public static String getLastErrorMessage(HidDeviceStructure device) {
@@ -206,7 +202,6 @@ public class HidApi {
 
   /**
    * @param device The HID device
-   *
    * @return The device manufacturer string
    */
   public static String getManufacturer(HidDeviceStructure device) {
@@ -223,7 +218,6 @@ public class HidApi {
 
   /**
    * @param device The HID device
-   *
    * @return The device product ID
    */
   public static String getProductId(HidDeviceStructure device) {
@@ -240,7 +234,6 @@ public class HidApi {
 
   /**
    * @param device The HID device
-   *
    * @return The device serial number
    */
   public static String getSerialNumber(HidDeviceStructure device) {
@@ -258,15 +251,14 @@ public class HidApi {
 
   /**
    * Set the device handle to be non-blocking
-   *
+   * <p>
    * In non-blocking mode calls to hid_read() will return immediately with a value of 0 if there is no data to be read.
    * In blocking mode, hid_read() will wait (block) until there is data to read before returning
-   *
+   * <p>
    * Non-blocking can be turned on and off at any time
    *
    * @param device      The HID device
    * @param nonBlocking True if non-blocking mode is required
-   *
    * @return True if successful
    */
   public static boolean setNonBlocking(HidDeviceStructure device, boolean nonBlocking) {
@@ -282,7 +274,6 @@ public class HidApi {
    *
    * @param device The HID device
    * @param buffer The buffer to read into (allow an extra byte if device supports multiple report IDs)
-   *
    * @return The actual number of bytes read and -1 on error. If no packet was available to be read
    * and the handle is in non-blocking mode, this function returns 0.
    */
@@ -310,7 +301,6 @@ public class HidApi {
    * @param device        The HID device
    * @param buffer        The buffer to read into
    * @param timeoutMillis The number of milliseconds to wait before giving up
-   *
    * @return The actual number of bytes read and -1 on error. If no packet was available to be read within
    * the timeout period returns 0.
    */
@@ -334,9 +324,8 @@ public class HidApi {
 
   /**
    * Get a feature report from a HID device
-   *
    * <b>HID API notes</b>
-   *
+   * <p>
    * Under the covers the HID library will set the first byte of data[] to the Report ID of the report to be read.
    * Upon return, the first byte will still contain the Report ID, and the report data will start in data[1]
    * This method handles all the wide string and array manipulation for you
@@ -344,7 +333,6 @@ public class HidApi {
    * @param device   The HID device
    * @param data     The buffer to contain the report
    * @param reportId The report ID (or (byte) 0x00)
-   *
    * @return The number of bytes read plus one for the report ID (which has been removed from the first byte), or -1 on error.
    */
   public static int getFeatureReport(HidDeviceStructure device, byte[] data, byte reportId) {
@@ -373,25 +361,23 @@ public class HidApi {
 
   /**
    * Send a Feature report to the device using a simplified interface
-   *
    * <b>HID API notes</b>
-   *
+   * <p>
    * Under the covers, feature reports are sent over the Control endpoint as a Set_Report transfer.
    * The first byte of data[] must contain the Report ID. For devices which only support a single report,
    * this must be set to 0x0. The remaining bytes contain the report data
    * Since the Report ID is mandatory, calls to hid_send_feature_report() will always contain one more byte than
    * the report contains.
-   *
+   * <p>
    * For example, if a hid report is 16 bytes long, 17 bytes must be passed to
    * hid_send_feature_report(): the Report ID (or 0x00, for devices which do not use numbered reports), followed by
    * the report data (16 bytes). In this example, the bytes written would be 17.
-   *
+   * <p>
    * This method handles all the array manipulation for you
    *
    * @param device   The HID device
    * @param data     The feature report data (will be widened and have the report ID pre-pended)
    * @param reportId The report ID (or (byte) 0x00)
-   *
    * @return This function returns the actual number of bytes written and -1 on error.
    */
   public static int sendFeatureReport(HidDeviceStructure device, byte[] data, byte reportId) {
@@ -413,19 +399,17 @@ public class HidApi {
 
   /**
    * Write an Output report to a HID device using a simplified interface
-   *
    * <b>HID API notes</b>
-   *
+   * <p>
    * In USB HID the first byte of the data packet must contain the Report ID.
    * For devices which only support a single report, this must be set to 0x00.
    * The remaining bytes contain the report data. Since the Report ID is mandatory,
    * calls to <code>hid_write()</code> will always contain one more byte than the report
    * contains.
-   *
+   * <p>
    * For example, if a HID report is 16 bytes long, 17 bytes must be passed to <code>hid_write()</code>,
    * the Report ID (or 0x00, for devices with a single report), followed by the report data (16 bytes).
    * In this example, the length passed in would be 17.
-   *
    * <code>hid_write()</code> will send the data on the first OUT endpoint, if one exists.
    * If it does not, it will send the data through the Control Endpoint (Endpoint 0)
    *
@@ -433,7 +417,6 @@ public class HidApi {
    * @param data     The report data to write (should not include the Report ID)
    * @param len      The length of the report data (should not include the Report ID)
    * @param reportId The report ID (or (byte) 0x00)
-   *
    * @return The number of bytes written, or -1 if an error occurs
    */
   public static int write(HidDeviceStructure device, byte[] data, int len, byte reportId) {
@@ -468,7 +451,6 @@ public class HidApi {
    *
    * @param device The HID device
    * @param idx    The index
-   *
    * @return The string
    */
   public static String getIndexedString(HidDeviceStructure device, int idx) {
@@ -483,8 +465,26 @@ public class HidApi {
   }
 
   /**
-   *
-   * @param buffer The buffer to serialise for traffic
+   * Get a report descriptor from a HID device
+   * <p>
+   * User has to provide a preallocated buffer (4096 bytes recommended) where descriptor will be copied to
+   * <p>
+   * @param device The HID device
+   * @param buffer The buffer to copy descriptor into.
+   * @param size   The size of the buffer in bytes.
+   * @return A non-negative number of bytes actually copied, or -1 on error.
+   * @since 0.14.0 hidapi
+   */
+  public static int getReportDescriptor(HidDeviceStructure device, byte[] buffer, int size) {
+
+    if (device == null) {
+      return -1;
+    }
+    return hidApiLibrary.hid_get_report_descriptor(device.ptr(), buffer, size);
+  }
+
+  /**
+   * @param buffer  The buffer to serialise for traffic
    * @param isWrite True if writing (from host to device)
    */
   private static void logTraffic(WideStringBuffer buffer, boolean isWrite) {
@@ -506,11 +506,10 @@ public class HidApi {
    * Returns the full version of the underlying hidapi library
    *
    * @return The version in major.minor.patch format
-   *
    * @see org.hid4java.HidServices#getNativeVersion
    */
   public static String getVersion() {
-    if(hidApiLibrary == null) {
+    if (hidApiLibrary == null) {
       init();
     }
     return hidApiLibrary.hid_version_str();
