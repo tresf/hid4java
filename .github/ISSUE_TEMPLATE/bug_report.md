@@ -4,35 +4,38 @@ about: Create a report to help us improve
 title: ''
 labels: ''
 assignees: ''
-
 ---
-
-**Describe the bug**
-A clear and concise description of what the bug is.
+**Describe the problem**
+A clear and concise description of what the problem is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+
+1. Attempting to read from device '...'
+2. Code sample looks like this '...'
+3. Error happens when '...'
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Screenshots and logs**
+If applicable, add screenshots and redacted logs to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+Screenshots:
+Drag and drop image here
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+Logs:
 
-**Additional context**
-Add any other context about the problem here.
+```
+<add redacted logs here>
+```
+
+**Platform:**
+Knowing the platform greatly narrows down the potential causes of the problem.
+
+- OS: [e.g. darwin-aarch64, win32-x86-64]
+- `hid4java` Version [e.g. 0.7.0, develop-SNAPSHOT]
+
+**Additional information**
+Add any other context about the problem here, including any investigative work
+done and thoughts on solution.
