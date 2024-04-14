@@ -65,15 +65,9 @@
 
   <profiles>
 
-    <!-- To activate this use 'mvn release:prepare release:perform' -->
+    <!-- Only activated during release -->
     <profile>
       <id>release-sign-artifacts</id>
-      <activation>
-        <property>
-          <name>performRelease</name>
-          <value>true</value>
-        </property>
-      </activation>
       <build>
         <plugins>
           <plugin>
@@ -147,6 +141,7 @@
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <mavenExecutorId>forked-path</mavenExecutorId>
+          <releaseProfiles>release-sign-artifacts</releaseProfiles>
         </configuration>
       </plugin>
 
