@@ -55,6 +55,14 @@ public abstract class BaseExample implements HidServicesListener {
 
   }
 
+  public static void printAsHex(byte[] dataReceived) {
+    System.out.printf("< [%02x]:", dataReceived.length);
+    for (byte b : dataReceived) {
+      System.out.printf(" %02x", b);
+    }
+    System.out.println(ANSI_RESET);
+  }
+
   public void waitAndShutdown(HidServices hidServices) {
 
     System.out.printf(ANSI_YELLOW + "Waiting 30s to demonstrate attach/detach handling. Watch for slow response after write if configured.%n" + ANSI_RESET);
@@ -119,11 +127,8 @@ public abstract class BaseExample implements HidServicesListener {
 
     System.out.printf(ANSI_PURPLE + "Data received:%n");
     byte[] dataReceived = event.getDataReceived();
-    System.out.printf("< [%02x]:", dataReceived.length);
-    for (byte b : dataReceived) {
-      System.out.printf(" %02x", b);
-    }
-    System.out.println(ANSI_RESET);
+
+    printAsHex(dataReceived);
 
   }
 

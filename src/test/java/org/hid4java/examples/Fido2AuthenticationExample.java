@@ -197,10 +197,28 @@ public class Fido2AuthenticationExample extends BaseExample {
       // Shut down and rely on auto-shutdown hook to clear HidApi resources
       System.out.println(ANSI_YELLOW + "No FIDO2 devices attached." + ANSI_RESET);
     } else {
-      if (handleInitialise(fidoDevice)) {
-        // TODO Expand example to include a registration request
-        //handleRegister(fidoDevice);
+
+      // Open the device
+      if (fidoDevice.isClosed()) {
+        if (!fidoDevice.open()) {
+          throw new IllegalStateException("Unable to open device");
+        }
       }
+
+      // Perform a USB ReportDescriptor operation to determine general device capabilities
+      // This requires complex decoding defined in the referenced documents
+      // Reports can be up to 4096 bytes for complex devices so 64 is quite low
+      byte[] reportDescriptor = new byte[64];
+      if (fidoDevice.getReportDescriptor(reportDescriptor) > 0) {
+        System.out.println(ANSI_GREEN + "FIDO2 device report descriptor (first 64 bytes): " + fidoDevice.getPath() + ANSI_RESET);
+        printAsHex(reportDescriptor);
+      }
+
+      // Perform a FIDO Initialise operation
+      handleInitialise(fidoDevice);
+
+      // TODO Consider further operations such as Registration to illustrate state machine
+
     }
 
     waitAndShutdown(hidServices);
@@ -223,13 +241,6 @@ public class Fido2AuthenticationExample extends BaseExample {
    * @return True if the device is now initialised for use
    */
   private boolean handleInitialise(HidDevice hidDevice) {
-
-    // Ensure device is open
-    if (hidDevice.isClosed()) {
-      if (!hidDevice.open()) {
-        throw new IllegalStateException("Unable to open device");
-      }
-    }
 
     generateNonce();
 
