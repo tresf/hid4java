@@ -31,7 +31,7 @@ an instant response but I'm usually active on Telegram during office hours in th
   <dependency>
     <groupId>org.hid4java</groupId>
     <artifactId>hid4java</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
   </dependency>
 
 </dependencies>
