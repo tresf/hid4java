@@ -26,8 +26,8 @@
 # windows - build all Windows variants
 # linux - build all Linux variants
 # darwin - build all macOS variants (not recommended)
-# darwin-x86-64 - OS X 64-bit
-# darwin-aarch64 - OS X ARM64
+# darwin-x86-64 - macOS 64-bit
+# darwin-aarch64 - macOS ARM64
 # linux-aarch64 - Linux ARMv8 64-bit
 # linux-amd64 - Linux AMD 64-bit
 # linux-arm - Linux ARMv6 hard float 32-bit (RPi)
@@ -58,6 +58,27 @@ red="\033[31m"
 yellow="\033[33m"
 green="\033[32m"
 plain="\033[0m"
+
+# Initial checks
+# @Tresf: macOS deployment target checking
+# See https://github.com/gary-rowe/hid4java/issues/120 for more details
+if [[ "$1" == "all" ]] || [[ "$1" == "darwin" ]] || [[ "$1" == "darwin-aarch64" ]] || [[ "$1" == "darwin-x86-64" ]]
+  then
+    if [ -z "$SDKROOT" ] || [ -z "$MACOSX_DEPLOYMENT_TARGET" ];
+      then
+        echo -e "${yellow}WARNING: For production builds, please set \$SDKROOT and \$MACOSX_DEPLOYMENT_TARGET before building${plain}"
+        echo -e "${yellow}Continuing with default values${plain}"
+        export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
+        if [[ "$1" == "all" ]] || [[ "$1" == "darwin" ]] || [[ "$1" == "darwin-aarch64" ]]
+          then
+            # Build for darwin-aarch64 with minimum of OS Big Sur (2020)
+            export MACOSX_DEPLOYMENT_TARGET="11.0"
+          else
+            # Build for darwin-x86-64 with minimum of OS Mavericks (2013)
+            export MACOSX_DEPLOYMENT_TARGET="10.9"
+       fi
+    fi
+fi
 
 # @Tresf: Function to do "make clean" without incurring issues during build
 function git-clean {
@@ -399,12 +420,16 @@ echo -e "${green}---------------------------------------------------------------
 
 # macOS environments (require local build)
 
-if [[ "${hardwareName}" == "arm64" ]]
+# Darwin ARM64 (local)
+if [[ "$1" == "all" ]] || [[ "$1" == "darwin" ]] || [[ "$1" == "darwin-aarch64" ]]
   then
-    # Darwin ARM64 (local)
-    if [[ "$1" == "all" ]] || [[ "$1" == "darwin" ]] || [[ "$1" == "darwin-aarch64" ]]
+    # Check if build is possible with local environment
+    if [[ "${hardwareName}" == "i386" ]]
       then
-        echo -e "${green}Building OS X Darwin ARM64 (aarch64)${plain}" && git-clean
+        echo -e "${yellow}Building macOS Darwin x86 (x86-64) requires change of architecture.${plain}"
+        echo -e "${yellow}  Re-run with 'arch -arm64 zsh ./build-hidapi.sh darwin-aarch64'${plain}"
+      else
+        echo -e "${green}Building macOS Darwin ARM64 (aarch64)${plain}" && git-clean
         ./bootstrap
         ./configure
         if ! make;
@@ -416,14 +441,19 @@ if [[ "${hardwareName}" == "arm64" ]]
             mkdir -p ${hid4javaDir}/src/main/resources/darwin-aarch64
             cp mac/.libs/libhidapi.0.dylib ${hid4javaDir}/src/main/resources/darwin-aarch64/libhidapi.dylib
         fi
-      else
-        echo -e "${yellow}Skipping darwin-aarch64${plain}"
     fi
-  else
-    # Darwin Intel (local)
-    if [[ "$1" == "all" ]] || [[ "$1" == "darwin" ]] || [[ "$1" == "darwin-x86-64" ]]
+fi
+
+# Darwin Intel (local)
+if [[ "$1" == "all" ]] || [[ "$1" == "darwin" ]] || [[ "$1" == "darwin-x86-64" ]]
+  then
+    # Check if build is possible with local environment
+    if [[ "${hardwareName}" == "arm64" ]]
       then
-        echo -e "${green}Building OS X Darwin Intel (x86-64)${plain}" && git-clean
+        echo -e "${yellow}Building macOS Darwin x86 (x86-64) requires change of architecture.${plain}"
+        echo -e "${yellow}  Re-run with 'arch -x86_64 zsh ./build-hidapi.sh darwin-x86-64'${plain}"
+      else
+        echo -e "${green}Building macOS Darwin Intel (x86-64)${plain}" && git-clean
         make clean
         ./bootstrap
         ./configure
@@ -436,9 +466,9 @@ if [[ "${hardwareName}" == "arm64" ]]
             mkdir -p ${hid4javaDir}/src/main/resources/darwin-x86-64
             cp mac/.libs/libhidapi.0.dylib ${hid4javaDir}/src/main/resources/darwin-x86-64/libhidapi.dylib
         fi
-      else
-        echo -e "${yellow}Skipping darwin-x86-64${plain}"
     fi
+  else
+    echo -e "${yellow}Skipping darwin-x86-64${plain}"
 fi
 
 echo -e "${green}------------------------------------------------------------------------${plain}"
@@ -507,14 +537,16 @@ if [[ "$1" == "update" ]]
 
     echo -e "${green}------------------------------------------------------------------------${plain}"
 
-    # OS X
-    echo -e "${green}OS X${plain}"
+    # macOS
+    echo -e "${green}macOS${plain}"
 
-    echo -e "${green}darwin${plain}"
+    echo -e "${green}darwin-x86-64${plain}"
     report "src/main/resources/darwin-x86-64/libhidapi.dylib"
+    otool -l src/main/resources/darwin-x86-64/libhidapi.dylib | grep -E 'LC_VERSION_MIN_MACOSX|LC_BUILD_VERSION' -A4
 
     echo -e "${green}darwin-aarch64${plain}"
     report "src/main/resources/darwin-aarch64/libhidapi.dylib"
+    otool -l src/main/resources/darwin-aarch64/libhidapi.dylib | grep -E 'LC_VERSION_MIN_MACOSX|LC_BUILD_VERSION' -A4
 
     echo -e "${green}------------------------------------------------------------------------${plain}"
 
