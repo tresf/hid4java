@@ -424,7 +424,7 @@ echo -e "${green}---------------------------------------------------------------
 if [[ "$1" == "all" ]] || [[ "$1" == "darwin" ]] || [[ "$1" == "darwin-aarch64" ]]
   then
     # Check if build is possible with local environment
-    if [[ "${hardwareName}" == "i386" ]]
+    if [[ "${hardwareName}" == "x86_64" ]]
       then
         echo -e "${yellow}Building macOS Darwin x86 (x86-64) requires change of architecture.${plain}"
         echo -e "${yellow}  Re-run with 'arch -arm64 zsh ./build-hidapi.sh darwin-aarch64'${plain}"
